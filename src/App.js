@@ -49,13 +49,20 @@ const App = () => {
     const setupCall = async () => {
       try {
         await client.connectUser({ id: userId }, token);
-        const newCall = client.call('default', callId);  // 👈 custom callId here
+        const newCall = client.call('default', callId);
         await newCall.getOrCreate();
+    
+        // 👇 Enable camera + mic
+        await newCall.camera.enable();
+        await newCall.microphone.enable();
+        await newCall.join();
+    
         setCall(newCall);
       } catch (err) {
         console.error('Call setup failed:', err);
       }
     };
+    
 
     setupCall();
   }, [token, userId, callId]);
@@ -101,9 +108,12 @@ const App = () => {
   </div>
 
   {/* 👇 Your Local Video Stream */}
-{call?.state?.localParticipant && (
-  <Video participant={call.state.localParticipant} />
-)}
+  <div style={{ position: 'fixed', bottom: 10, right: 10, width: 200, height: 150 }}>
+  {call?.state?.localParticipant && (
+    <Video participant={call.state.localParticipant} />
+  )}
+</div>
+
 
   {/* 👇 Other Participants */}
   <SpeakerLayout />
