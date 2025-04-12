@@ -6,6 +6,7 @@ import {
   StreamTheme,
   SpeakerLayout,
   CallControls,
+  Video,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
 import '@stream-io/video-react-sdk/dist/css/styles.css';
@@ -88,18 +89,26 @@ const App = () => {
     <StreamVideo client={client}>
       <StreamCall call={call}>
         <StreamTheme>
-          <div style={{ padding: '10px', textAlign: 'center' }}>
-            <strong>You are: {userId}</strong><br />
-            <strong>Call ID: {callId}</strong><br />
-            Participants: {participants.length}
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {participants.map((p) => (
-                <li key={p.sessionId}>{p.user?.id || 'Unknown User'}</li>
-              ))}
-            </ul>
-          </div>
-          <SpeakerLayout />
-          <CallControls />
+        <div style={{ padding: '10px', textAlign: 'center' }}>
+    <strong>You are: {userId}</strong><br />
+    <strong>Call ID: {callId}</strong><br />
+    Participants: {participants.length}
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {participants.map((p) => (
+        <li key={p.sessionId}>{p.user?.id || 'Unknown User'}</li>
+      ))}
+    </ul>
+  </div>
+
+  {/* 👇 Your Local Video Stream */}
+{call?.state?.localParticipant && (
+  <Video participant={call.state.localParticipant} />
+)}
+
+  {/* 👇 Other Participants */}
+  <SpeakerLayout />
+
+  <CallControls />
         </StreamTheme>
       </StreamCall>
     </StreamVideo>
